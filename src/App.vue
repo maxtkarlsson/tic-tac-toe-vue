@@ -1,6 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ShowRegistration from "./components/ShowRegistration.vue";
+</script>
 
-<template></template>
+<template>
+  <ShowRegistration></ShowRegistration>
+</template>
 
 <style scoped>
 .logo {
