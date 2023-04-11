@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ShowRegistration from "./components/ShowRegistration.vue";
+import AppRegistration from "./components/AppRegistration.vue";
 </script>
 
 <template>
-  <ShowRegistration></ShowRegistration>
+  <AppRegistration></AppRegistration>
 </template>
 
 <style scoped>
