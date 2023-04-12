@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import AppGame from "./components/AppGame.vue";
 import AppRegistration from "./components/AppRegistration.vue";
 </script>
 
 <template>
-  <AppRegistration></AppRegistration>
+  <AppGame></AppGame>
 </template>
 
 <style scoped>
