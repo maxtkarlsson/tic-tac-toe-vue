@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { GameState } from "../models/GameState";
 import { Player } from "../models/Player";
 import AppRegistration from "./AppRegistration.vue";
+import { getRandomInt } from "../helpers/functions";
 
 const state = ref<GameState>({
   players: [],
@@ -11,16 +12,10 @@ const state = ref<GameState>({
   isGamerOver: false,
 });
 
-const getRandomInt = (min: number, max: number) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-};
-
 const addPlayer = (name: string) => {
   const playerToAdd = new Player(0, name, 0);
   const playerlist = state.value.players;
-  let currentPlayer = state.value.currentPlayer;
+  //Måste ändra till staten
 
   if (playerlist.length < 3) {
     if (playerlist.length === 0) {
@@ -29,8 +24,8 @@ const addPlayer = (name: string) => {
     } else if (playerlist.length === 1) {
       playerToAdd.id = 2;
       playerlist.push(playerToAdd);
-      currentPlayer = getRandomInt(1, 3);
-      console.log(currentPlayer);
+      state.value.currentPlayer = getRandomInt(1, 3);
+      console.log("CurrentPlayer har satts till: ", state.value.currentPlayer);
     }
   }
 
@@ -39,6 +34,13 @@ const addPlayer = (name: string) => {
 
 const placeGamePiece = (clickedSquare: number) => {
   console.log("Du klickade på ruta: ", clickedSquare);
+  console.log("Current player är: ", state.value.currentPlayer);
+  state.value.gameboard[clickedSquare] = state.value.currentPlayer;
+  if (state.value.currentPlayer === 1) {
+    state.value.currentPlayer = 2;
+  } else if (state.value.currentPlayer === 2) {
+    state.value.currentPlayer = 1;
+  }
 };
 </script>
 
@@ -48,10 +50,28 @@ const placeGamePiece = (clickedSquare: number) => {
     <div
       class="game__square"
       v-for="(square, index) in state.gameboard"
-      @click="placeGamePiece(index)"
+      @click.once="placeGamePiece(index)"
     >
       {{ square }}
     </div>
+  </div>
+  <div>
+    <p>
+      Current player:<br />
+      {{ state.currentPlayer }}
+    </p>
+    <p>
+      Gameboard:<br />
+      {{ state.gameboard }}
+    </p>
+    <p>
+      Players:<br />
+      {{ state.players }}
+    </p>
+    <p>
+      isGameOver:<br />
+      {{ state.isGamerOver }}
+    </p>
   </div>
 </template>
 
