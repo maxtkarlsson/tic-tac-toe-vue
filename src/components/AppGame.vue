@@ -43,7 +43,9 @@ const gameOver = () => {
 };
 
 const newRound = () => {
-  //
+  state.value.gameboard = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+  state.value.currentPlayer = getRandomInt(1, 3);
+  state.value.isGamerOver = false;
 };
 
 const resetGame = () => {
@@ -130,13 +132,14 @@ const placeGamePiece = (clickedSquare: number) => {
       <p v-if="state.gameboard[index] === 2">O</p>
     </div>
   </div>
-  <div class="winner" v-if="state.isGamerOver === true">
+  <div class="game-over" v-if="state.isGamerOver === true">
     <p v-if="state.currentPlayer === 1">
       The winner is {{ state.players[1].name }}!
     </p>
     <p v-if="state.currentPlayer === 2">
       The winner is {{ state.players[0].name }}!
     </p>
+    <button @click="newRound">Play again</button>
   </div>
   <div>
     <p>
