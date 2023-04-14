@@ -7,7 +7,7 @@ import { getRandomInt } from "../helpers/functions";
 
 const state = ref<GameState>({
   players: [],
-  gameboard: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  gameboard: [10, 20, 30, 40, 50, 60, 70, 80, 90],
   currentPlayer: 0,
   isGamerOver: false,
 });
@@ -15,7 +15,7 @@ const state = ref<GameState>({
 const addPlayer = (name: string) => {
   const playerToAdd = new Player(0, name, 0);
   const playerlist = state.value.players;
-  //Måste ändra till staten
+  //Måste ändra till staten?
 
   if (playerlist.length < 3) {
     if (playerlist.length === 0) {
@@ -32,10 +32,84 @@ const addPlayer = (name: string) => {
   console.log(state.value);
 };
 
+const gameOver = () => {
+  state.value.isGamerOver = true;
+  if (state.value.currentPlayer === 1) {
+    state.value.players[0].score++;
+  }
+  if (state.value.currentPlayer === 2) {
+    state.value.players[1].score++;
+  }
+};
+
+const newRound = () => {
+  //
+};
+
+const resetGame = () => {
+  //
+};
+
+const checkGameBoard = () => {
+  // [0][1][2]
+  // [3][4][5]
+  // [6][7][8]
+  const board = state.value.gameboard;
+
+  //Check first row
+  if (board[0] === board[1] && board[1] === board[2]) {
+    console.log("Första raden matchar");
+    gameOver();
+  }
+
+  //Check second row
+  if (board[3] === board[4] && board[4] === board[5]) {
+    console.log("Andra raden matchar");
+    gameOver();
+  }
+
+  //Check third row
+  if (board[6] === board[7] && board[7] === board[8]) {
+    console.log("Tredje raden matchar");
+    gameOver();
+  }
+
+  //Check first column
+  if (board[0] === board[3] && board[3] === board[6]) {
+    console.log("Första kolumnen matchar");
+    gameOver();
+  }
+
+  //Check second column
+  if (board[1] === board[4] && board[4] === board[7]) {
+    console.log("Andra kolumnen matchar");
+    gameOver();
+  }
+
+  //Check third column
+  if (board[2] === board[5] && board[5] === board[8]) {
+    console.log("Tredje kolumnen matchar");
+    gameOver();
+  }
+
+  //Check first diagonal
+  if (board[6] === board[4] && board[4] === board[2]) {
+    console.log("Första diagonalen matchar");
+    gameOver();
+  }
+
+  //Check second diagonal
+  if (board[0] === board[4] && board[4] === board[8]) {
+    console.log("Andra diagonalen matchar");
+    gameOver();
+  }
+};
+
 const placeGamePiece = (clickedSquare: number) => {
   console.log("Du klickade på ruta: ", clickedSquare);
   console.log("Current player är: ", state.value.currentPlayer);
   state.value.gameboard[clickedSquare] = state.value.currentPlayer;
+  checkGameBoard();
   if (state.value.currentPlayer === 1) {
     state.value.currentPlayer = 2;
   } else if (state.value.currentPlayer === 2) {
@@ -45,15 +119,24 @@ const placeGamePiece = (clickedSquare: number) => {
 </script>
 
 <template>
-  <AppRegistration @add-player="addPlayer" />
-  <div class="game">
+  <AppRegistration @add-player="addPlayer" v-if="state.players.length < 2" />
+  <div class="game" v-if="state.isGamerOver === false">
     <div
       class="game__square"
       v-for="(square, index) in state.gameboard"
       @click.once="placeGamePiece(index)"
     >
-      {{ square }}
+      <p v-if="state.gameboard[index] === 1">X</p>
+      <p v-if="state.gameboard[index] === 2">O</p>
     </div>
+  </div>
+  <div class="winner" v-if="state.isGamerOver === true">
+    <p v-if="state.currentPlayer === 1">
+      The winner is {{ state.players[1].name }}!
+    </p>
+    <p v-if="state.currentPlayer === 2">
+      The winner is {{ state.players[0].name }}!
+    </p>
   </div>
   <div>
     <p>
