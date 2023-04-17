@@ -16,7 +16,6 @@ const state = ref<GameState>({
 const addPlayer = (name: string) => {
   const playerToAdd = new Player(0, name, 0);
   const playerlist = state.value.players;
-  //Måste ändra till staten?
 
   if (playerlist.length < 3) {
     if (playerlist.length === 0) {
@@ -150,10 +149,7 @@ const placeGamePiece = (clickedSquare: number) => {
       <p v-if="state.gameboard[index] === 2">O</p>
     </div>
   </div>
-  <div class="nav">
-    <button class="nav__btn-reset" @click="resetGame">Reset game</button>
-    <button class="nav__btn-scoreboard">Show scoreboard</button>
-  </div>
+
   <div class="game-over" v-if="state.isGamerOver === true">
     <p v-if="state.currentPlayer === 1 && state.moveCount < 9">
       The winner is {{ state.players[1].name }}!
@@ -165,27 +161,25 @@ const placeGamePiece = (clickedSquare: number) => {
 
     <button @click="newRound">Play again</button>
   </div>
-  <div>
-    <p>
-      Current player:<br />
-      {{ state.currentPlayer }}
+
+  <div class="game-stats">
+    <p class="game-stats__header" v-if="state.isGamerOver === false">
+      Current player is:
     </p>
-    <p>
-      Gameboard:<br />
-      {{ state.gameboard }}
-    </p>
-    <p>
-      Players:<br />
-      {{ state.players }}
-    </p>
-    <p>
-      isGameOver:<br />
-      {{ state.isGamerOver }}
-    </p>
-    <p>
-      moveCount:<br />
-      {{ state.moveCount }}
-    </p>
+    <div class="game-stats__text" v-for="(player, index) in state.players">
+      <p
+        v-if="state.currentPlayer === player.id && state.isGamerOver === false"
+      >
+        {{ player.name }}
+      </p>
+    </div>
+    <p class="game-stats__header">Score:</p>
+    <div class="game-stats__text" v-for="(player, index) in state.players">
+      <p>{{ player.name }} has a score of {{ player.score }}.</p>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav__btn-reset" @click="resetGame">Reset game</button>
   </div>
 </template>
 
@@ -201,5 +195,14 @@ const placeGamePiece = (clickedSquare: number) => {
   border: 1px solid white;
   width: 50px;
   height: 50px;
+}
+
+.game-over p {
+  font-size: 50px;
+}
+
+.game-stats__header {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

@@ -7,6 +7,7 @@ const emit = defineEmits(["addPlayer"]);
 
 function handleSubmit(playername: string) {
   emit("addPlayer", playername);
+  name.value = "";
 }
 </script>
 
@@ -14,7 +15,6 @@ function handleSubmit(playername: string) {
   <form @submit.prevent="handleSubmit(name)">
     <input type="text" v-model="name" />
     <button type="submit">Add player</button>
-    <p>{{ name }}</p>
   </form>
 </template>
 
