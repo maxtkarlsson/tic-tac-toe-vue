@@ -5,6 +5,7 @@ export class GameState {
     public players: Player[],
     public gameboard: number[],
     public currentPlayer: number,
-    public isGamerOver: boolean
+    public isGamerOver: boolean,
+    public moveCount: number
   ) {}
 }

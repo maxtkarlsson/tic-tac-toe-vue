@@ -10,6 +10,7 @@ const state = ref<GameState>({
   gameboard: [10, 20, 30, 40, 50, 60, 70, 80, 90],
   currentPlayer: 0,
   isGamerOver: false,
+  moveCount: 0,
 });
 
 const addPlayer = (name: string) => {
@@ -34,6 +35,11 @@ const addPlayer = (name: string) => {
 
 const gameOver = () => {
   state.value.isGamerOver = true;
+
+  if (state.value.moveCount > 8) {
+    return;
+  }
+
   if (state.value.currentPlayer === 1) {
     state.value.players[0].score++;
   }
@@ -46,6 +52,7 @@ const newRound = () => {
   state.value.gameboard = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   state.value.currentPlayer = getRandomInt(1, 3);
   state.value.isGamerOver = false;
+  state.value.moveCount = 0;
 };
 
 const resetGame = () => {
@@ -53,6 +60,7 @@ const resetGame = () => {
   state.value.gameboard = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   state.value.currentPlayer = 0;
   state.value.isGamerOver = false;
+  state.value.moveCount = 0;
 };
 
 const checkGameBoard = () => {
@@ -114,7 +122,11 @@ const placeGamePiece = (clickedSquare: number) => {
   console.log("Du klickade på ruta: ", clickedSquare);
   console.log("Current player är: ", state.value.currentPlayer);
   state.value.gameboard[clickedSquare] = state.value.currentPlayer;
+  state.value.moveCount++;
   checkGameBoard();
+  if (state.value.moveCount === 9) {
+    gameOver();
+  }
   if (state.value.currentPlayer === 1) {
     state.value.currentPlayer = 2;
   } else if (state.value.currentPlayer === 2) {
@@ -125,7 +137,10 @@ const placeGamePiece = (clickedSquare: number) => {
 
 <template>
   <AppRegistration @add-player="addPlayer" v-if="state.players.length < 2" />
-  <div class="game" v-if="state.isGamerOver === false">
+  <div
+    class="game"
+    v-if="state.isGamerOver === false && state.players.length > 1"
+  >
     <div
       class="game__square"
       v-for="(square, index) in state.gameboard"
@@ -140,12 +155,14 @@ const placeGamePiece = (clickedSquare: number) => {
     <button class="nav__btn-scoreboard">Show scoreboard</button>
   </div>
   <div class="game-over" v-if="state.isGamerOver === true">
-    <p v-if="state.currentPlayer === 1">
+    <p v-if="state.currentPlayer === 1 && state.moveCount < 9">
       The winner is {{ state.players[1].name }}!
     </p>
-    <p v-if="state.currentPlayer === 2">
+    <p v-if="state.currentPlayer === 2 && state.moveCount < 9">
       The winner is {{ state.players[0].name }}!
     </p>
+    <p v-if="state.moveCount > 8">It is a draw!</p>
+
     <button @click="newRound">Play again</button>
   </div>
   <div>
@@ -164,6 +181,10 @@ const placeGamePiece = (clickedSquare: number) => {
     <p>
       isGameOver:<br />
       {{ state.isGamerOver }}
+    </p>
+    <p>
+      moveCount:<br />
+      {{ state.moveCount }}
     </p>
   </div>
 </template>
